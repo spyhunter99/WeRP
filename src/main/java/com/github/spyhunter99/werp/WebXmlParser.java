@@ -44,6 +44,7 @@ public class WebXmlParser {
 
     public void parse(File input) throws Exception {
         //Get the DOM Builder Factory
+        long start=System.currentTimeMillis();
         DocumentBuilderFactory factory
                 = DocumentBuilderFactory.newInstance();
 
@@ -63,10 +64,12 @@ public class WebXmlParser {
         } else {
             throw new Exception("not supported");
         }
+        System.out.println("Parsed in " + (System.currentTimeMillis()-start) +"ms");
 
     }
 
     public void write(File output) throws Exception {
+        long start=System.currentTimeMillis();
         //loop through the current document, remove any element no longer in our collection
 
         processWebAppNodeWrite();
@@ -86,13 +89,12 @@ public class WebXmlParser {
         transformer.transform(source, result);
         fos.flush();
         fos.close();
+        System.out.println("Written in " + (System.currentTimeMillis()-start) +"ms");
     }
 
     private void processWebAppNode(Node node) {
 
-        System.out.println(node.getNodeName());
-        System.out.println(node.getNodeValue());
-
+        
         if ("servlet".equalsIgnoreCase(node.getNodeName())) {
 
             ServletElement e = new ServletElement();
@@ -129,7 +131,7 @@ public class WebXmlParser {
                     }
                     e.getParams().add(param);
                 } else if ("filter-class".equalsIgnoreCase(cNode.getNodeName())) {
-                    e.setFilterName(cNode.getTextContent());
+                    e.setFilterClass(cNode.getTextContent());
                 }
             }
             filters.add(e);
@@ -180,6 +182,7 @@ public class WebXmlParser {
     private void processWebAppNodeWrite() {
 
         doFilters();
+        doFiltersMappings();
 
     }
 
@@ -212,7 +215,7 @@ public class WebXmlParser {
                         }
                         e.getParams().add(param);
                     } else if ("filter-class".equalsIgnoreCase(cNode.getNodeName())) {
-                        e.setFilterName(cNode.getTextContent());
+                        e.setFilterClass(cNode.getTextContent());
                     }
                 }
                 currentList.add(e);
@@ -362,6 +365,135 @@ public class WebXmlParser {
 
     public List<FilterMapping> getFilterMapping() {
         return filterMapping;
+    }
+
+    private void doFiltersMappings() {
+        List<FilterMapping> currentList = new ArrayList<FilterMapping>();
+        NodeList nodeList = document.getDocumentElement().getChildNodes();
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            Node node = nodeList.item(i);
+
+            //non-destructive merge
+            if ("filter-mapping".equalsIgnoreCase(node.getNodeName())) {
+
+                FilterMapping e = new FilterMapping();
+                NodeList childNodes = node.getChildNodes();
+                for (int j = 0; j < childNodes.getLength(); j++) {
+                    Node cNode = childNodes.item(j);
+                    if ("filter-name".equalsIgnoreCase(cNode.getNodeName())) {
+                        e.setFilterName(cNode.getTextContent().trim());
+                    } else if ("url-pattern".equalsIgnoreCase(cNode.getNodeName())) {
+                        e.setUrlPattern(cNode.getTextContent());
+                    } 
+                }
+                currentList.add(e);
+
+            }
+        }
+
+        //ok we have everything in the original document
+        for (int k = 0; k < currentList.size(); k++) {
+            //is it still in the caller's desired collection
+            boolean keep = false;
+            for (int j = 0; j < filterMapping.size(); j++) {
+                if (filterMapping.get(j).getFilterName() != null && filterMapping.get(j).getFilterName().equalsIgnoreCase(currentList.get(k).getFilterName())) {
+                    keep = true;
+                    break;
+                }
+            }
+            if (!keep) {
+                //remove the item from the xml doc
+
+                nodeList = document.getDocumentElement().getChildNodes();
+                for (int mm = 0; mm < nodeList.getLength(); mm++) {
+                    Node node = nodeList.item(mm);
+
+                    //non-destructive merge
+                    if ("filter-mapping".equalsIgnoreCase(node.getNodeName())) {
+
+                        FilterMapping e = new FilterMapping();
+                        NodeList childNodes = node.getChildNodes();
+                        for (int j = 0; j < childNodes.getLength(); j++) {
+                            Node cNode = childNodes.item(j);
+                            if ("filter-name".equalsIgnoreCase(cNode.getNodeName())) {
+                                e.setFilterName(cNode.getTextContent().trim());
+                            } else if ("url-pattern".equalsIgnoreCase(cNode.getNodeName())) {
+                                e.setUrlPattern(cNode.getTextContent());
+                            }
+                        }
+
+                        if (e.getFilterName()!= null && e.getFilterName().equalsIgnoreCase(currentList.get(k).getFilterName())) {
+                            document.removeChild(node);
+                            break;
+                        }
+
+                    }
+                }
+            }
+
+        }
+
+        for (int j = 0; j < filterMapping.size(); j++) {
+            boolean add = true;
+            for (int k = 0; k < currentList.size(); k++) {
+                if (filterMapping.get(j).getFilterName() == null) {
+                    add = false;
+                    break;
+                }
+                if (filterMapping.get(j).getFilterName().equalsIgnoreCase(currentList.get(k).getFilterName())) {
+                    add = false;
+                    break;
+                }
+            }
+
+            if (add) {
+                //ok the caller has added something new that wasn't there before, add it
+                Node newfilter = document.createElement("filter-mapping");
+
+                //popupate the new filter element
+                Node newfilterClass = document.createElement("url-pattern");
+                Node newfilterName = document.createElement("filter-name");
+                newfilterName.setTextContent(filterMapping.get(j).getFilterName());
+                newfilterClass.setTextContent(filterMapping.get(j).getUrlPattern());
+                
+                newfilter.appendChild(newfilterName);
+                newfilter.appendChild(newfilterClass);
+
+                //filter, insert before the first filter 
+                boolean added = false;
+                nodeList = document.getDocumentElement().getChildNodes();
+                for (int i = 0; i < nodeList.getLength(); i++) {
+                    Node node = nodeList.item(i);
+
+                    if ("filter-mapping".equalsIgnoreCase(node.getNodeName())) {
+                        document.getDocumentElement().insertBefore(newfilter, node);
+                        added = true;
+                        break;
+                    } else if ("listener".equalsIgnoreCase(node.getNodeName())) {
+                        document.getDocumentElement().insertBefore(newfilter, node);
+                        added = true;
+                        break;
+                    } else if ("servlet".equalsIgnoreCase(node.getNodeName())) {
+                        document.getDocumentElement().insertBefore(newfilter, node);
+                        added = true;
+                        break;
+                    } else if ("servlet-mapping".equalsIgnoreCase(node.getNodeName())) {
+                        document.getDocumentElement().insertBefore(newfilter, node);
+                        added = true;
+                        break;
+                    } else if ("servlet".equalsIgnoreCase(node.getNodeName())) {
+                        document.getDocumentElement().insertBefore(newfilter, node);
+                        added = true;
+                        break;
+                    }
+                }
+
+                if (!added) {
+                    document.getDocumentElement().appendChild(newfilter);
+                }
+            }
+
+        }
     }
 
 }

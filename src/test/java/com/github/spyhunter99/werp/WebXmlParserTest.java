@@ -43,15 +43,35 @@ public class WebXmlParserTest {
     public void tearDown() {
     }
 
+    private void runTest(File input) throws Exception {
+
+        WebXmlParser instance = new WebXmlParser();
+        instance.parse(input);
+        int beforeS = instance.getServlets().size();
+        int beforeFM = instance.getFilterMapping().size();
+        int beforeF = instance.getFilters().size();
+
+        instance.getFilters().add(new FilterElement("MyCoolFilter", "com.github.spyhunter99.AwesomeFilter"));
+        instance.getFilterMapping().add(new FilterMapping("MyCoolFilter", "/*"));
+        File output = new File("target/" + input.getName() + "-modified.xml");
+
+        instance.write(output);
+        instance = new WebXmlParser();
+        instance.parse(output);
+        Assert.assertEquals(beforeS, instance.getServlets().size());
+        Assert.assertEquals(beforeFM + 1, instance.getFilterMapping().size());
+        Assert.assertEquals(beforeF + 1, instance.getFilters().size());
+
+    }
+
     /**
      * Test of parse method, of class WebXmlParser.
      */
     @org.junit.Test
     public void testParse() throws Exception {
-        System.out.println("parse");
+        System.out.println("parse1");
         File input = new File("src/test/resources/servlet23.xml");
-        WebXmlParser instance = new WebXmlParser();
-        instance.parse(input);
+        runTest(input);
 
     }
 
@@ -60,13 +80,9 @@ public class WebXmlParserTest {
      */
     @org.junit.Test
     public void testParse2() throws Exception {
-        System.out.println("parse");
+        System.out.println("parse2");
         File input = new File("src/test/resources/juddi-svc-web.xml");
-        WebXmlParser instance = new WebXmlParser();
-        instance.parse(input);
-        Assert.assertEquals(3, instance.getServlets().size());
-        Assert.assertEquals(2, instance.getServletMapping().size());
-
+        runTest(input);
     }
 
     /**
@@ -74,54 +90,30 @@ public class WebXmlParserTest {
      */
     @org.junit.Test
     public void testParse3() throws Exception {
-        System.out.println("parse");
+        System.out.println("parse3");
         File input = new File("src/test/resources/juddi-ui-web.xml");
-        WebXmlParser instance = new WebXmlParser();
-        instance.parse(input);
-        Assert.assertEquals(0, instance.getServlets().size());
-
+        runTest(input);
     }
-    
-      /**
+
+    /**
      * Test of parse method, of class WebXmlParser.
      */
     @org.junit.Test
     public void testParse4() throws Exception {
-        System.out.println("parse");
+        System.out.println("parse4");
         File input = new File("src/test/resources/withFilters.xml");
-        WebXmlParser instance = new WebXmlParser();
-        instance.parse(input);
-        Assert.assertEquals(1, instance.getServlets().size());
-        Assert.assertEquals(1, instance.getFilterMapping().size());
-        Assert.assertEquals(1, instance.getFilters().size());
-        
-        instance.getFilters().add(new FilterElement("MyCoolFilter","com.github.spyhunter99.AwesomeFilter"));
-        instance.getFilterMapping().add(new FilterMapping("MyCoolFilter","/*"));
-        File output = new File("target/withFilters-modified.xml");
-        
-        instance.write(output);
-        instance = new WebXmlParser();
-        instance.parse(output);
-        Assert.assertEquals(1, instance.getServlets().size());
-        Assert.assertEquals(1, instance.getFilterMapping().size());
-        Assert.assertEquals(2, instance.getFilters().size());
-        
-        
+        runTest(input);
 
     }
-    
-      /**
+
+    /**
      * Test of parse method, of class WebXmlParser.
      */
     @org.junit.Test
     public void testParse5() throws Exception {
-        System.out.println("parse");
+        System.out.println("parse5");
         File input = new File("src/test/resources/withFilters2.xml");
-        WebXmlParser instance = new WebXmlParser();
-        instance.parse(input);
-        Assert.assertEquals(1, instance.getServlets().size());
-        Assert.assertEquals(0, instance.getFilterMapping().size());
-        Assert.assertEquals(0, instance.getFilters().size());
+        runTest(input);
 
     }
 
