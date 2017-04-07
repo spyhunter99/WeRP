@@ -94,12 +94,23 @@ public class WebXmlParserTest {
      * Test of parse method, of class WebXmlParser.
      */
     @org.junit.Test
+    public void testParseF() throws Exception {
+        System.out.println("parseF");
+        File input = new File("src/test/resources/fgsms/web.xml");
+        runTest(input);
+
+    }
+    
+      /**
+     * Test of parse method, of class WebXmlParser.
+     */
+    @org.junit.Test
     public void testParse() throws Exception {
         System.out.println("parse1");
         File input = new File("src/test/resources/servlet23.xml");
         runTest(input);
 
-    }
+    }   
 
     /**
      * Test of parse method, of class WebXmlParser.

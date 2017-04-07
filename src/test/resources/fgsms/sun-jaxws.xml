@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoints version="2.0" xmlns="http://java.sun.com/xml/ns/jax-ws/ri/runtime">
+    <endpoint implementation="com.examples.wsdl.helloservice.HelloWorldImpl1" name="HelloWorldImplService1" url-pattern="/HelloWorldImplSunRi1">
+        <handler-chains xmlns="http://java.sun.com/xml/ns/javaee">
+            <handler-chain>
+                <handler>
+                    <handler-class>org.miloss.fgsms.agents.JAXWSGenericAgent</handler-class>
+                </handler> 
+            </handler-chain>
+        </handler-chains>
+    </endpoint>
+    <endpoint implementation="com.examples.wsdl.helloservice.HelloWorldImpl2" name="HelloWorldImplService2" url-pattern="/HelloWorldImplSunRi2">
+        <handler-chains xmlns="http://java.sun.com/xml/ns/javaee">
+            <handler-chain>
+                <handler>
+                    <handler-class>org.miloss.fgsms.agents.JAXWSGenericAgent</handler-class>
+                </handler> 
+            </handler-chain>
+        </handler-chains>
+    </endpoint>
+    <endpoint implementation="com.examples.wsdl.helloservice.HelloWorldImpl3" name="HelloWorldImplService3" url-pattern="/HelloWorldImplSunRi3">
+        <handler-chains xmlns="http://java.sun.com/xml/ns/javaee">
+            <handler-chain>
+                <handler>   
+                    <handler-class>org.miloss.fgsms.agents.JAXWSGenericAgent</handler-class>
+                </handler> 
+            </handler-chain>
+        </handler-chains>
+    </endpoint>
+    <endpoint implementation="com.examples.wsdl.helloservice.HelloWorldImpl4" name="HelloWorldImplService4" url-pattern="/HelloWorldImplSunRi4">
+        <handler-chains xmlns="http://java.sun.com/xml/ns/javaee">
+            <handler-chain>
+                <handler>
+                    <handler-class>org.miloss.fgsms.agents.JAXWSGenericAgent</handler-class>
+                </handler> 
+            </handler-chain>
+        </handler-chains>
+    </endpoint>
+    <endpoint implementation="com.examples.wsdl.helloservice.HelloWorldImpl5" name="HelloWorldImplService5" url-pattern="/HelloWorldImplSunRi5">
+        <handler-chains xmlns="http://java.sun.com/xml/ns/javaee">
+            <handler-chain>
+                <handler>
+                    <handler-class>org.miloss.fgsms.agents.JAXWSGenericAgent</handler-class>
+                </handler> 
+            </handler-chain>
+        </handler-chains>
+    </endpoint>
+</endpoints>

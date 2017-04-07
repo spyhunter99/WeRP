@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+    <display-name>Apache-Axis</display-name>
+    <listener>
+        <listener-class>se.jiderhamn.classloader.leak.prevention.ClassLoaderLeakPreventorListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>org.apache.axis.transport.http.AxisHTTPSessionListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>
+                com.sun.xml.ws.transport.http.servlet.WSServletContextListener
+        </listener-class>
+    </listener>
+    <filter>
+        <display-name>FGSMS servlet filter</display-name>
+        <description>performance tracker</description>
+        <filter-name>fgsms</filter-name>
+        <filter-class>org.miloss.fgsms.agents.HttpServletAgent</filter-class>
+        <!-- useful if most of your stuff goes to a similar endpoint -->
+    </filter>
+    <filter-mapping>
+        <filter-name>fgsms</filter-name>
+        <servlet-name>NoFrameworkRestService</servlet-name>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>fgsms</filter-name>
+        <servlet-name>echo</servlet-name>
+    </filter-mapping>
+    <servlet>
+        <servlet-name>sun-ri</servlet-name>
+        <servlet-class>
+        	com.sun.xml.ws.transport.http.servlet.WSServlet
+        </servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+   
+    <servlet-mapping>
+        <servlet-name>NoFrameworkRestService</servlet-name>
+        <url-pattern>/service/NoFrameworkRestService</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>echo</servlet-name>
+        <url-pattern>/service/echo</url-pattern>
+    </servlet-mapping>
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>WEB-INF/beans.xml</param-value>
+    </context-param>
+    <servlet>
+        <servlet-name>CXFServlet</servlet-name>
+        <servlet-class>
+            org.apache.cxf.transport.servlet.CXFServlet
+        </servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CXFServlet</servlet-name>
+        <url-pattern>/services-cxf/*</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>NoFrameworkRestService</servlet-name>
+        <display-name>NoFrameworkRestService</display-name>
+        <servlet-class>
+            org.miloss.fgsms.smoke.servlet.NoFrameworkRestServlet
+        </servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>echo</servlet-name>
+        <servlet-class>io.apiman.quickstarts.echo.EchoServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AxisServlet</servlet-name>
+        <display-name>Apache-Axis Servlet</display-name>
+        <servlet-class>
+            org.apache.axis.transport.http.AxisServlet
+        </servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AdminServlet</servlet-name>
+        <display-name>Axis Admin Servlet</display-name>
+        <servlet-class>
+            org.apache.axis.transport.http.AdminServlet
+        </servlet-class>
+        <load-on-startup>100</load-on-startup>
+    </servlet>
+    <servlet>
+        <servlet-name>SOAPMonitorService</servlet-name>
+        <display-name>SOAPMonitorService</display-name>
+        <servlet-class>
+            org.apache.axis.monitor.SOAPMonitorService
+        </servlet-class>
+        <init-param>
+            <param-name>SOAPMonitorPort</param-name>
+            <param-value>5001</param-value>
+        </init-param>
+        <load-on-startup>100</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>AxisServlet</servlet-name>
+        <url-pattern>/servlet/AxisServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AxisServlet</servlet-name>
+        <url-pattern>*.jws</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AxisServlet</servlet-name>
+        <url-pattern>/services-axis/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SOAPMonitorService</servlet-name>
+        <url-pattern>/SOAPMonitor</url-pattern>
+    </servlet-mapping>
+    
+    
+ 
+    <servlet-mapping>
+        <servlet-name>sun-ri</servlet-name>
+        <url-pattern>/HelloWorldImplSunRi1</url-pattern>
+    </servlet-mapping>
+       <servlet-mapping>
+        <servlet-name>sun-ri</servlet-name>
+        <url-pattern>/HelloWorldImplSunRi2</url-pattern>
+    </servlet-mapping>
+        <servlet-mapping>
+        <servlet-name>sun-ri</servlet-name>
+        <url-pattern>/HelloWorldImplSunRi3</url-pattern>
+    </servlet-mapping>
+        <servlet-mapping>
+        <servlet-name>sun-ri</servlet-name>
+        <url-pattern>/HelloWorldImplSunRi4</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>sun-ri</servlet-name>
+        <url-pattern>/HelloWorldImplSunRi5</url-pattern>
+    </servlet-mapping>
+    <session-config>
+        <!-- Default to 5 minute session timeouts -->
+        <session-timeout>5</session-timeout>
+    </session-config>
+    <!-- currently the W3C havent settled on a media type for WSDL;
+    http://www.w3.org/TR/2003/WD-wsdl12-20030303/#ietf-draft
+    for now we go with the basic 'it's XML' response -->
+    <mime-mapping>
+        <extension>wsdl</extension>
+        <mime-type>text/xml</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>xsd</extension>
+        <mime-type>text/xml</mime-type>
+    </mime-mapping>
+    <welcome-file-list id="WelcomeFileList">
+        <welcome-file>index.jsp</welcome-file>
+        <welcome-file>index.html</welcome-file>
+        <welcome-file>index.jws</welcome-file>
+    </welcome-file-list>
+</web-app>

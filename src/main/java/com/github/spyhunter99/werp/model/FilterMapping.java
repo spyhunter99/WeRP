@@ -19,6 +19,7 @@ public class FilterMapping {
     }
     private String filterName;
     private String urlPattern;
+    private String servletName;
 
     public String getFilterName() {
         return filterName;
@@ -34,5 +35,13 @@ public class FilterMapping {
 
     public void setUrlPattern(String urlPattern) {
         this.urlPattern = urlPattern;
+    }
+
+    public String getServletName() {
+        return servletName;
+    }
+
+    public void setServletName(String servletName) {
+        this.servletName = servletName;
     }
 }

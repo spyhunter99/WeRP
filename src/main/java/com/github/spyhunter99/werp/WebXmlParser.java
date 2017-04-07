@@ -24,7 +24,6 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import org.w3c.dom.Element;
 
 /**
  *
@@ -159,6 +158,8 @@ public class WebXmlParser {
                     e.setFilterName(cNode.getTextContent().trim());
                 } else if (URL_PATTERN_TAG.equalsIgnoreCase(cNode.getNodeName())) {
                     e.setUrlPattern(cNode.getTextContent().trim());
+                } else if (SERVLET_NAME_TAG.equalsIgnoreCase(cNode.getNodeName())) {
+                    e.setServletName(cNode.getTextContent().trim());
                 }
             }
             filterMapping.add(e);
@@ -397,7 +398,9 @@ public class WebXmlParser {
                     if (FILTER_NAME_TAG.equalsIgnoreCase(cNode.getNodeName())) {
                         e.setFilterName(cNode.getTextContent().trim());
                     } else if (URL_PATTERN_TAG.equalsIgnoreCase(cNode.getNodeName())) {
-                        e.setUrlPattern(cNode.getTextContent());
+                        e.setUrlPattern(cNode.getTextContent().trim());
+                    } else if (SERVLET_NAME_TAG.equalsIgnoreCase(cNode.getNodeName())) {
+                        e.setServletName(cNode.getTextContent().trim());
                     }
                 }
                 currentList.add(e);
@@ -432,7 +435,9 @@ public class WebXmlParser {
                             if (FILTER_NAME_TAG.equalsIgnoreCase(cNode.getNodeName())) {
                                 e.setFilterName(cNode.getTextContent().trim());
                             } else if (URL_PATTERN_TAG.equalsIgnoreCase(cNode.getNodeName())) {
-                                e.setUrlPattern(cNode.getTextContent());
+                                e.setUrlPattern(cNode.getTextContent().trim());
+                            } else if (SERVLET_NAME_TAG.equalsIgnoreCase(cNode.getNodeName())) {
+                                e.setServletName(cNode.getTextContent().trim());
                             }
                         }
 
@@ -465,13 +470,19 @@ public class WebXmlParser {
                 Node newfilter = document.createElement(FILTER_MAPPING_TAG);
 
                 //popupate the new filter element
-                Node newfilterClass = document.createElement(URL_PATTERN_TAG);
                 Node newfilterName = document.createElement(FILTER_NAME_TAG);
                 newfilterName.setTextContent(filterMapping.get(j).getFilterName());
-                newfilterClass.setTextContent(filterMapping.get(j).getUrlPattern());
-
                 newfilter.appendChild(newfilterName);
-                newfilter.appendChild(newfilterClass);
+                if (filterMapping.get(j).getUrlPattern() != null) {
+                    Node urlpattern = document.createElement(URL_PATTERN_TAG);
+                    urlpattern.setTextContent(filterMapping.get(j).getUrlPattern());
+                    newfilter.appendChild(urlpattern);
+                }
+                if (filterMapping.get(j).getServletName() != null) {
+                    Node urlpattern = document.createElement(SERVLET_NAME_TAG);
+                    urlpattern.setTextContent(filterMapping.get(j).getServletName());
+                    newfilter.appendChild(urlpattern);
+                }
 
                 //filter, insert before the first filter 
                 boolean added = false;
