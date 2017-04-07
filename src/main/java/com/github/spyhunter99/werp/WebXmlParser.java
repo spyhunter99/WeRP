@@ -32,6 +32,20 @@ import org.w3c.dom.Element;
  */
 public class WebXmlParser {
 
+    private static final String SERVLET_MAPPING_TAG = "servlet-mapping";
+    private static final String PARAM_VALUE_TAG = "param-value";
+    private static final String PARAM_NAME_TAG = "param-name";
+    private static final String SERVLET_CLASS_TAG = "servlet-class";
+
+    private static final String FILTER_TAG = "filter";
+    private static final String SERVLET_TAG = "servlet";
+    private static final String SERVLET_NAME_TAG = "servlet-name";
+    private static final String DISPLAY_NAME_TAG = "display-name";
+    private static final String FILTER_NAME_TAG = "filter-name";
+    private static final String FILTER_CLASS_TAG = "filter-class";
+    private static final String FILTER_MAPPING_TAG = "filter-mapping";
+    private static final String URL_PATTERN_TAG = "url-pattern";
+    private static final String INIT_PARAM_TAG = "init-param";
     private List<ServletElement> servlets = new ArrayList<>();
     private List<FilterElement> filters = new ArrayList<>();
     private List<FilterMapping> filterMapping = new ArrayList<>();
@@ -94,69 +108,69 @@ public class WebXmlParser {
 
     private void processWebAppNode(Node node) {
 
-        if ("servlet".equalsIgnoreCase(node.getNodeName())) {
+        if (SERVLET_TAG.equalsIgnoreCase(node.getNodeName())) {
 
             ServletElement e = new ServletElement();
             NodeList childNodes = node.getChildNodes();
             for (int j = 0; j < childNodes.getLength(); j++) {
                 Node cNode = childNodes.item(j);
-                if ("servlet-name".equalsIgnoreCase(cNode.getNodeName())) {
+                if (SERVLET_NAME_TAG.equalsIgnoreCase(cNode.getNodeName())) {
                     e.setServletName(cNode.getTextContent().trim());
-                } else if ("display-name".equalsIgnoreCase(cNode.getNodeName())) {
+                } else if (DISPLAY_NAME_TAG.equalsIgnoreCase(cNode.getNodeName())) {
                     e.setDiplayName(cNode.getTextContent().trim());
-                } else if ("servlet-class".equalsIgnoreCase(cNode.getNodeName())) {
+                } else if (SERVLET_CLASS_TAG.equalsIgnoreCase(cNode.getNodeName())) {
                     e.setServletClass(cNode.getTextContent().trim());
                 }
             }
             servlets.add(e);
 
-        } else if ("filter".equalsIgnoreCase(node.getNodeName())) {
+        } else if (FILTER_TAG.equalsIgnoreCase(node.getNodeName())) {
             FilterElement e = new FilterElement();
             NodeList childNodes = node.getChildNodes();
             for (int j = 0; j < childNodes.getLength(); j++) {
                 Node cNode = childNodes.item(j);
-                if ("filter-name".equalsIgnoreCase(cNode.getNodeName())) {
+                if (FILTER_NAME_TAG.equalsIgnoreCase(cNode.getNodeName())) {
                     e.setFilterName(cNode.getTextContent().trim());
-                } else if ("init-param".equalsIgnoreCase(cNode.getNodeName())) {
+                } else if (INIT_PARAM_TAG.equalsIgnoreCase(cNode.getNodeName())) {
                     NodeList childNodes2 = cNode.getChildNodes();
                     InitParam param = new InitParam();
                     for (int k = 0; k < childNodes2.getLength(); k++) {
                         Node cNode2 = childNodes2.item(j);
-                        if ("param-name".equalsIgnoreCase(cNode.getNodeName())) {
+                        if (PARAM_NAME_TAG.equalsIgnoreCase(cNode.getNodeName())) {
                             param.setParamName(cNode2.getTextContent().trim());
-                        } else if ("param-value".equalsIgnoreCase(cNode.getNodeName())) {
+                        } else if (PARAM_VALUE_TAG.equalsIgnoreCase(cNode.getNodeName())) {
                             param.setParamValue(cNode2.getTextContent().trim());
                         }
                     }
                     e.getParams().add(param);
-                } else if ("filter-class".equalsIgnoreCase(cNode.getNodeName())) {
+                } else if (FILTER_CLASS_TAG.equalsIgnoreCase(cNode.getNodeName())) {
                     e.setFilterClass(cNode.getTextContent());
                 }
             }
             filters.add(e);
 
-        } else if ("filter-mapping".equalsIgnoreCase(node.getNodeName())) {
+        } else if (FILTER_MAPPING_TAG.equalsIgnoreCase(node.getNodeName())) {
 
             FilterMapping e = new FilterMapping();
             NodeList childNodes = node.getChildNodes();
             for (int j = 0; j < childNodes.getLength(); j++) {
                 Node cNode = childNodes.item(j);
-                if ("filter-name".equalsIgnoreCase(cNode.getNodeName())) {
+                if (FILTER_NAME_TAG.equalsIgnoreCase(cNode.getNodeName())) {
                     e.setFilterName(cNode.getTextContent().trim());
-                } else if ("url-pattern".equalsIgnoreCase(cNode.getNodeName())) {
+                } else if (URL_PATTERN_TAG.equalsIgnoreCase(cNode.getNodeName())) {
                     e.setUrlPattern(cNode.getTextContent().trim());
                 }
             }
             filterMapping.add(e);
-        } else if ("servlet-mapping".equalsIgnoreCase(node.getNodeName())) {
+        } else if (SERVLET_MAPPING_TAG.equalsIgnoreCase(node.getNodeName())) {
 
             ServletMapping e = new ServletMapping();
             NodeList childNodes = node.getChildNodes();
             for (int j = 0; j < childNodes.getLength(); j++) {
                 Node cNode = childNodes.item(j);
-                if ("servlet-name".equalsIgnoreCase(cNode.getNodeName())) {
+                if (SERVLET_NAME_TAG.equalsIgnoreCase(cNode.getNodeName())) {
                     e.setServletName(cNode.getTextContent().trim());
-                } else if ("url-pattern".equalsIgnoreCase(cNode.getNodeName())) {
+                } else if (URL_PATTERN_TAG.equalsIgnoreCase(cNode.getNodeName())) {
                     e.setUrlPattern(cNode.getTextContent().trim());
                 }
             }
@@ -193,27 +207,27 @@ public class WebXmlParser {
             Node node = nodeList.item(i);
 
             //non-destructive merge
-            if ("filter".equalsIgnoreCase(node.getNodeName())) {
+            if (FILTER_TAG.equalsIgnoreCase(node.getNodeName())) {
 
                 FilterElement e = new FilterElement();
                 NodeList childNodes = node.getChildNodes();
                 for (int j = 0; j < childNodes.getLength(); j++) {
                     Node cNode = childNodes.item(j);
-                    if ("filter-name".equalsIgnoreCase(cNode.getNodeName())) {
+                    if (FILTER_NAME_TAG.equalsIgnoreCase(cNode.getNodeName())) {
                         e.setFilterName(cNode.getTextContent().trim());
-                    } else if ("init-param".equalsIgnoreCase(cNode.getNodeName())) {
+                    } else if (INIT_PARAM_TAG.equalsIgnoreCase(cNode.getNodeName())) {
                         NodeList childNodes2 = cNode.getChildNodes();
                         InitParam param = new InitParam();
                         for (int k = 0; k < childNodes2.getLength(); k++) {
                             Node cNode2 = childNodes2.item(j);
-                            if ("param-name".equalsIgnoreCase(cNode.getNodeName())) {
+                            if (PARAM_NAME_TAG.equalsIgnoreCase(cNode.getNodeName())) {
                                 param.setParamName(cNode2.getTextContent().trim());
-                            } else if ("param-value".equalsIgnoreCase(cNode.getNodeName())) {
+                            } else if (PARAM_VALUE_TAG.equalsIgnoreCase(cNode.getNodeName())) {
                                 param.setParamValue(cNode2.getTextContent().trim());
                             }
                         }
                         e.getParams().add(param);
-                    } else if ("filter-class".equalsIgnoreCase(cNode.getNodeName())) {
+                    } else if (FILTER_CLASS_TAG.equalsIgnoreCase(cNode.getNodeName())) {
                         e.setFilterClass(cNode.getTextContent());
                     }
                 }
@@ -240,27 +254,27 @@ public class WebXmlParser {
                     Node node = nodeList.item(mm);
 
                     //non-destructive merge
-                    if ("filter".equalsIgnoreCase(node.getNodeName())) {
+                    if (FILTER_TAG.equalsIgnoreCase(node.getNodeName())) {
 
                         FilterElement e = new FilterElement();
                         NodeList childNodes = node.getChildNodes();
                         for (int j = 0; j < childNodes.getLength(); j++) {
                             Node cNode = childNodes.item(j);
-                            if ("filter-name".equalsIgnoreCase(cNode.getNodeName())) {
+                            if (FILTER_NAME_TAG.equalsIgnoreCase(cNode.getNodeName())) {
                                 e.setFilterName(cNode.getTextContent().trim());
-                            } else if ("init-param".equalsIgnoreCase(cNode.getNodeName())) {
+                            } else if (INIT_PARAM_TAG.equalsIgnoreCase(cNode.getNodeName())) {
                                 NodeList childNodes2 = cNode.getChildNodes();
                                 InitParam param = new InitParam();
                                 for (int kk = 0; kk < childNodes2.getLength(); kk++) {
                                     Node cNode2 = childNodes2.item(j);
-                                    if ("param-name".equalsIgnoreCase(cNode.getNodeName())) {
+                                    if (PARAM_NAME_TAG.equalsIgnoreCase(cNode.getNodeName())) {
                                         param.setParamName(cNode2.getTextContent().trim());
-                                    } else if ("param-value".equalsIgnoreCase(cNode.getNodeName())) {
+                                    } else if (PARAM_VALUE_TAG.equalsIgnoreCase(cNode.getNodeName())) {
                                         param.setParamValue(cNode2.getTextContent().trim());
                                     }
                                 }
                                 e.getParams().add(param);
-                            } else if ("filter-class".equalsIgnoreCase(cNode.getNodeName())) {
+                            } else if (FILTER_CLASS_TAG.equalsIgnoreCase(cNode.getNodeName())) {
                                 e.setFilterClass(cNode.getTextContent());
                             }
                         }
@@ -291,18 +305,18 @@ public class WebXmlParser {
 
             if (add) {
                 //ok the caller has added something new that wasn't there before, add it
-                Node newfilter = document.createElement("filter");
+                Node newfilter = document.createElement(FILTER_TAG);
 
                 //popupate the new filter element
-                Node newfilterClass = document.createElement("filter-class");
-                Node newfilterName = document.createElement("filter-name");
+                Node newfilterClass = document.createElement(FILTER_CLASS_TAG);
+                Node newfilterName = document.createElement(FILTER_NAME_TAG);
                 newfilterName.setTextContent(filters.get(j).getFilterName());
                 newfilterClass.setTextContent(filters.get(j).getFilterClass());
                 for (int k = 0; k < filters.get(j).getParams().size(); k++) {
-                    Node ip = document.createElement("init-param");
-                    Node pn = document.createElement("param-name");
+                    Node ip = document.createElement(URL_PATTERN_TAG);
+                    Node pn = document.createElement(PARAM_NAME_TAG);
                     pn.setTextContent(filters.get(j).getParams().get(k).getParamName());
-                    Node pv = document.createElement("param-value");
+                    Node pv = document.createElement(PARAM_VALUE_TAG);
                     pv.setTextContent(filters.get(j).getParams().get(k).getParamValue());
                     ip.appendChild(pv);
                     ip.appendChild(pn);
@@ -319,27 +333,27 @@ public class WebXmlParser {
                     Node node = nodeList.item(i);
 
                     //non-destructive merge
-                    if ("filter".equalsIgnoreCase(node.getNodeName())) {
+                    if (FILTER_TAG.equalsIgnoreCase(node.getNodeName())) {
                         document.getDocumentElement().insertBefore(newfilter, node);
                         added = true;
                         break;
-                    } else if ("filter-mapping".equalsIgnoreCase(node.getNodeName())) {
+                    } else if (FILTER_MAPPING_TAG.equalsIgnoreCase(node.getNodeName())) {
                         document.getDocumentElement().insertBefore(newfilter, node);
                         added = true;
                         break;
-                    } else if ("listener".equalsIgnoreCase(node.getNodeName())) {
+                    } else if (LISTENER_TAG.equalsIgnoreCase(node.getNodeName())) {
                         document.getDocumentElement().insertBefore(newfilter, node);
                         added = true;
                         break;
-                    } else if ("servlet".equalsIgnoreCase(node.getNodeName())) {
+                    } else if (FILTER_TAG.equalsIgnoreCase(node.getNodeName())) {
                         document.getDocumentElement().insertBefore(newfilter, node);
                         added = true;
                         break;
-                    } else if ("servlet-mapping".equalsIgnoreCase(node.getNodeName())) {
+                    } else if (SERVLET_MAPPING_TAG.equalsIgnoreCase(node.getNodeName())) {
                         document.getDocumentElement().insertBefore(newfilter, node);
                         added = true;
                         break;
-                    } else if ("servlet".equalsIgnoreCase(node.getNodeName())) {
+                    } else if (FILTER_TAG.equalsIgnoreCase(node.getNodeName())) {
                         document.getDocumentElement().insertBefore(newfilter, node);
                         added = true;
                         break;
@@ -353,6 +367,7 @@ public class WebXmlParser {
 
         }
     }
+    private static final String LISTENER_TAG = "listener";
 
     public List<ServletElement> getServlets() {
         return servlets;
@@ -373,15 +388,15 @@ public class WebXmlParser {
             Node node = nodeList.item(i);
 
             //non-destructive merge
-            if ("filter-mapping".equalsIgnoreCase(node.getNodeName())) {
+            if (FILTER_MAPPING_TAG.equalsIgnoreCase(node.getNodeName())) {
 
                 FilterMapping e = new FilterMapping();
                 NodeList childNodes = node.getChildNodes();
                 for (int j = 0; j < childNodes.getLength(); j++) {
                     Node cNode = childNodes.item(j);
-                    if ("filter-name".equalsIgnoreCase(cNode.getNodeName())) {
+                    if (FILTER_NAME_TAG.equalsIgnoreCase(cNode.getNodeName())) {
                         e.setFilterName(cNode.getTextContent().trim());
-                    } else if ("url-pattern".equalsIgnoreCase(cNode.getNodeName())) {
+                    } else if (URL_PATTERN_TAG.equalsIgnoreCase(cNode.getNodeName())) {
                         e.setUrlPattern(cNode.getTextContent());
                     }
                 }
@@ -408,15 +423,15 @@ public class WebXmlParser {
                     Node node = nodeList.item(mm);
 
                     //non-destructive merge
-                    if ("filter-mapping".equalsIgnoreCase(node.getNodeName())) {
+                    if (FILTER_MAPPING_TAG.equalsIgnoreCase(node.getNodeName())) {
 
                         FilterMapping e = new FilterMapping();
                         NodeList childNodes = node.getChildNodes();
                         for (int j = 0; j < childNodes.getLength(); j++) {
                             Node cNode = childNodes.item(j);
-                            if ("filter-name".equalsIgnoreCase(cNode.getNodeName())) {
+                            if (FILTER_NAME_TAG.equalsIgnoreCase(cNode.getNodeName())) {
                                 e.setFilterName(cNode.getTextContent().trim());
-                            } else if ("url-pattern".equalsIgnoreCase(cNode.getNodeName())) {
+                            } else if (URL_PATTERN_TAG.equalsIgnoreCase(cNode.getNodeName())) {
                                 e.setUrlPattern(cNode.getTextContent());
                             }
                         }
@@ -447,11 +462,11 @@ public class WebXmlParser {
 
             if (add) {
                 //ok the caller has added something new that wasn't there before, add it
-                Node newfilter = document.createElement("filter-mapping");
+                Node newfilter = document.createElement(FILTER_MAPPING_TAG);
 
                 //popupate the new filter element
-                Node newfilterClass = document.createElement("url-pattern");
-                Node newfilterName = document.createElement("filter-name");
+                Node newfilterClass = document.createElement(URL_PATTERN_TAG);
+                Node newfilterName = document.createElement(FILTER_NAME_TAG);
                 newfilterName.setTextContent(filterMapping.get(j).getFilterName());
                 newfilterClass.setTextContent(filterMapping.get(j).getUrlPattern());
 
@@ -464,23 +479,23 @@ public class WebXmlParser {
                 for (int i = 0; i < nodeList.getLength(); i++) {
                     Node node = nodeList.item(i);
 
-                    if ("filter-mapping".equalsIgnoreCase(node.getNodeName())) {
+                    if (FILTER_MAPPING_TAG.equalsIgnoreCase(node.getNodeName())) {
                         document.getDocumentElement().insertBefore(newfilter, node);
                         added = true;
                         break;
-                    } else if ("listener".equalsIgnoreCase(node.getNodeName())) {
+                    } else if (LISTENER_TAG.equalsIgnoreCase(node.getNodeName())) {
                         document.getDocumentElement().insertBefore(newfilter, node);
                         added = true;
                         break;
-                    } else if ("servlet".equalsIgnoreCase(node.getNodeName())) {
+                    } else if (FILTER_TAG.equalsIgnoreCase(node.getNodeName())) {
                         document.getDocumentElement().insertBefore(newfilter, node);
                         added = true;
                         break;
-                    } else if ("servlet-mapping".equalsIgnoreCase(node.getNodeName())) {
+                    } else if (SERVLET_MAPPING_TAG.equalsIgnoreCase(node.getNodeName())) {
                         document.getDocumentElement().insertBefore(newfilter, node);
                         added = true;
                         break;
-                    } else if ("servlet".equalsIgnoreCase(node.getNodeName())) {
+                    } else if (FILTER_TAG.equalsIgnoreCase(node.getNodeName())) {
                         document.getDocumentElement().insertBefore(newfilter, node);
                         added = true;
                         break;
