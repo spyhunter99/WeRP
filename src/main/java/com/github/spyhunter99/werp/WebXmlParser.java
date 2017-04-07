@@ -9,7 +9,6 @@ import com.github.spyhunter99.werp.model.FilterElement;
 import com.github.spyhunter99.werp.model.FilterMapping;
 import com.github.spyhunter99.werp.model.InitParam;
 import com.github.spyhunter99.werp.model.ServletElement;
-import com.sun.javaee3.FilterMapping;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,16 +41,10 @@ public class WebXmlParser {
         Document document = builder.parse(input);
 
         if ("web-app".equalsIgnoreCase(document.getDocumentElement().getNodeName())) {
-            //Iterating through the nodes and extracting the data.
             NodeList nodeList = document.getDocumentElement().getChildNodes();
-
             for (int i = 0; i < nodeList.getLength(); i++) {
-
-                //We have encountered an <employee> tag.
                 Node node = nodeList.item(i);
-
                 processWebAppNode(node);
-
             }
         }
         return servlets;
