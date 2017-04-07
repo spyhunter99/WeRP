@@ -9,6 +9,7 @@ import com.github.spyhunter99.werp.model.FilterElement;
 import com.github.spyhunter99.werp.model.FilterMapping;
 import com.github.spyhunter99.werp.model.ServletElement;
 import java.io.File;
+import java.util.Iterator;
 import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -61,6 +62,31 @@ public class WebXmlParserTest {
         Assert.assertEquals(beforeS, instance.getServlets().size());
         Assert.assertEquals(beforeFM + 1, instance.getFilterMapping().size());
         Assert.assertEquals(beforeF + 1, instance.getFilters().size());
+
+        //ok now let's remove our additions, resave it, then compare with the original
+        Iterator<FilterMapping> iterator = instance.getFilterMapping().iterator();
+        while (iterator.hasNext()) {
+            FilterMapping next = iterator.next();
+            if (next.getFilterName().equals("MyCoolFilter")) {
+                instance.getFilterMapping().remove(next);
+                break;
+            }
+        }
+        Iterator<FilterElement> iterator1 = instance.getFilters().iterator();
+        while (iterator1.hasNext()) {
+            FilterElement next = iterator1.next();
+            if (next.getFilterClass().equals("com.github.spyhunter99.AwesomeFilter")) {
+                instance.getFilters().remove(next);
+                break;
+            }
+        }
+
+        instance.write(output);
+        instance = new WebXmlParser();
+        instance.parse(output);
+        Assert.assertEquals(beforeS, instance.getServlets().size());
+        Assert.assertEquals(beforeFM, instance.getFilterMapping().size());
+        Assert.assertEquals(beforeF, instance.getFilters().size());
 
     }
 

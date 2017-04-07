@@ -44,7 +44,7 @@ public class WebXmlParser {
 
     public void parse(File input) throws Exception {
         //Get the DOM Builder Factory
-        long start=System.currentTimeMillis();
+        long start = System.currentTimeMillis();
         DocumentBuilderFactory factory
                 = DocumentBuilderFactory.newInstance();
 
@@ -64,12 +64,12 @@ public class WebXmlParser {
         } else {
             throw new Exception("not supported");
         }
-        System.out.println("Parsed in " + (System.currentTimeMillis()-start) +"ms");
+        System.out.println("Parsed in " + (System.currentTimeMillis() - start) + "ms");
 
     }
 
     public void write(File output) throws Exception {
-        long start=System.currentTimeMillis();
+        long start = System.currentTimeMillis();
         //loop through the current document, remove any element no longer in our collection
 
         processWebAppNodeWrite();
@@ -89,12 +89,11 @@ public class WebXmlParser {
         transformer.transform(source, result);
         fos.flush();
         fos.close();
-        System.out.println("Written in " + (System.currentTimeMillis()-start) +"ms");
+        System.out.println("Written in " + (System.currentTimeMillis() - start) + "ms");
     }
 
     private void processWebAppNode(Node node) {
 
-        
         if ("servlet".equalsIgnoreCase(node.getNodeName())) {
 
             ServletElement e = new ServletElement();
@@ -262,12 +261,12 @@ public class WebXmlParser {
                                 }
                                 e.getParams().add(param);
                             } else if ("filter-class".equalsIgnoreCase(cNode.getNodeName())) {
-                                e.setFilterName(cNode.getTextContent());
+                                e.setFilterClass(cNode.getTextContent());
                             }
                         }
 
                         if (e.getFilterClass() != null && e.getFilterClass().equalsIgnoreCase(currentList.get(k).getFilterClass())) {
-                            document.removeChild(node);
+                            document.getDocumentElement().removeChild(node);
                             break;
                         }
 
@@ -384,7 +383,7 @@ public class WebXmlParser {
                         e.setFilterName(cNode.getTextContent().trim());
                     } else if ("url-pattern".equalsIgnoreCase(cNode.getNodeName())) {
                         e.setUrlPattern(cNode.getTextContent());
-                    } 
+                    }
                 }
                 currentList.add(e);
 
@@ -422,8 +421,8 @@ public class WebXmlParser {
                             }
                         }
 
-                        if (e.getFilterName()!= null && e.getFilterName().equalsIgnoreCase(currentList.get(k).getFilterName())) {
-                            document.removeChild(node);
+                        if (e.getFilterName() != null && e.getFilterName().equalsIgnoreCase(currentList.get(k).getFilterName())) {
+                            document.getDocumentElement().removeChild(node);
                             break;
                         }
 
@@ -455,7 +454,7 @@ public class WebXmlParser {
                 Node newfilterName = document.createElement("filter-name");
                 newfilterName.setTextContent(filterMapping.get(j).getFilterName());
                 newfilterClass.setTextContent(filterMapping.get(j).getUrlPattern());
-                
+
                 newfilter.appendChild(newfilterName);
                 newfilter.appendChild(newfilterClass);
 
