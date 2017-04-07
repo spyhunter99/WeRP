@@ -15,6 +15,11 @@ import java.util.List;
  */
 public class FilterElement {
 
+    public FilterElement(){}
+    public FilterElement(String name, String clazz){
+        this.filterName=name;
+        this.filterClass=clazz;
+    }
     private String filterName;
     private String filterClass;
     private List<InitParam> params = new ArrayList<>();

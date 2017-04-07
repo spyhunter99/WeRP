@@ -10,22 +10,16 @@ package com.github.spyhunter99.werp.model;
  *
  * @author AO
  */
-public class FilterMapping {
-
-    public FilterMapping(){}
-    public FilterMapping(String name, String urlpattern){
-        this.filterName=name;
-        this.urlPattern=urlpattern;
-    }
-    private String filterName;
+public class ServletMapping {
+    private String servletName;
     private String urlPattern;
 
-    public String getFilterName() {
-        return filterName;
+    public String getServletName() {
+        return servletName;
     }
 
-    public void setFilterName(String filterName) {
-        this.filterName = filterName;
+    public void setServletName(String servletName) {
+        this.servletName = servletName;
     }
 
     public String getUrlPattern() {
