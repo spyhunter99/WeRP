@@ -5,11 +5,11 @@
  */
 package com.github.spyhunter99.werp;
 
-import com.github.spyhunter99.werp.model.FilterElement;
-import com.github.spyhunter99.werp.model.FilterMapping;
-import com.github.spyhunter99.werp.model.InitParam;
-import com.github.spyhunter99.werp.model.ServletElement;
-import com.github.spyhunter99.werp.model.ServletMapping;
+import com.github.spyhunter99.werp.webxml.model.FilterElement;
+import com.github.spyhunter99.werp.webxml.model.FilterMapping;
+import com.github.spyhunter99.werp.webxml.model.InitParam;
+import com.github.spyhunter99.werp.webxml.model.ServletElement;
+import com.github.spyhunter99.werp.webxml.model.ServletMapping;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;

@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package com.github.spyhunter99.werp.model;
+package com.github.spyhunter99.werp.webxml.model;
 
 import java.util.ArrayList;
 import java.util.List;

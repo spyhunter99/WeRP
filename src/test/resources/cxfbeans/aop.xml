@@ -1,0 +1,31 @@
+<beans xmlns:jaxrs="http://cxf.apache.org/jaxrs" xmlns:aop="http://www.springframework.org/schema/aop"
+  xsi:schemaLocation=" http://www.springframework.org/schema/beans
+  http://www.springframework.org/schema/beans/spring-beans.xsd
+  http://www.springframework.org/schema/aop  
+  http://www.springframework.org/schema/aop/spring-aop.xsd 
+  http://cxf.apache.org/jaxrs 
+  http://cxf.apache.org/schemas/jaxrs.xsd">
+  <import resource="classpath:META-INF/cxf/cxf.xml"/>
+  <import resource="classpath:META-INF/cxf/cxf-extension-jaxrs-binding.xml"/>
+  <import resource="classpath:META-INF/cxf/cxf-servlet.xml"/>
+ 
+  <jaxrs:server id="bookservice" address="/">
+    <jaxrs:serviceBeans>
+          <ref bean="bookstore"/>
+          <ref bean="bookstoreInterface"/>
+        </jaxrs:serviceBeans>
+   </jaxrs:server>
+   <bean id="bookstore" class="org.apache.cxf.systest.jaxrs.BookStore"/>
+   <bean id="bookstoreInterface" class="org.apache.cxf.systest.jaxrs.BookStoreWithInterface"/>
+ 
+   <aop:config>
+    <aop:aspect id="loggingAspect" ref="simpleLogger">
+          <aop:before method="logBefore"
+              pointcut="execution(* org.apache.cxf.systest.jaxrs.BookStore*.*(..))"/>
+          <aop:after-returning method="logAfter"
+              pointcut="execution(* org.apache.cxf.systest.jaxrs.BookStore*.*(..))"/>
+        </aop:aspect>
+   </aop:config>
+   <bean id="simpleLogger"
+         class="org.apache.cxf.systest.jaxrs.SimpleLoggingAspect"/>
+</beans>

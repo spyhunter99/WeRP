@@ -1,0 +1,48 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:jaxws="http://cxf.apache.org/jaxws"
+        xmlns:soap="http://cxf.apache.org/bindings/soap"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+           http://cxf.apache.org/bindings/soap 
+           http://cxf.apache.org/schemas/configuration/soap.xsd
+           http://cxf.apache.org/jaxws 
+           http://cxf.apache.org/schemas/jaxws.xsd">
+ 
+  <import resource="classpath:META-INF/cxf/cxf.xml"/>
+  <import resource="classpath:META-INF/cxf/cxf-extension-soap.xml"/>
+ 
+  <jaxws:endpoint
+    id="helloWorld"
+    implementor="demo.spring.HelloWorldImpl"
+    address="http://localhost/HelloWorld">
+    <jaxws:inInterceptors>
+      <bean class="com.acme.SomeInterceptor"/>
+      <ref bean="anotherInterceptor"/>
+    </jaxws:inInterceptor>
+    <jaxws:properties>
+      <entry key="mtom-enabled" value="true"/>
+    </jaxws:properties>
+  </jaxws:endpoint> 
+ 
+  <bean id="anotherInterceptor" class="com.acme.SomeInterceptor"/>
+ 
+  <jaxws:endpoint id="simpleWithBinding"
+    implementor="#greeter"
+        address="http://localhost:8080/simpleWithAddress">
+    <jaxws:binding>
+       <soap:soapBinding mtomEnabled="true" version="1.2"/>
+    </jaxws:binding>
+  </jaxws:endpoint>
+ 
+  <jaxws:endpoint id="inlineInvoker"
+    address="http://localhost:8080/simpleWithAddress">
+    <jaxws:implementor>
+      <bean class="org.apache.hello_world_soap_http.GreeterImpl"/>
+    </jaxws:implementor>
+    <jaxws:invoker>
+      <bean class="org.apache.cxf.jaxws.spring.NullInvoker"/>
+    </jaxws:invoker>
+  </jaxws:endpoint>
+ 
+</beans>

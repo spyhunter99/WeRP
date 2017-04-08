@@ -5,9 +5,9 @@
  */
 package com.github.spyhunter99.werp;
 
-import com.github.spyhunter99.werp.model.FilterElement;
-import com.github.spyhunter99.werp.model.FilterMapping;
-import com.github.spyhunter99.werp.model.ServletElement;
+import com.github.spyhunter99.werp.webxml.model.FilterElement;
+import com.github.spyhunter99.werp.webxml.model.FilterMapping;
+import com.github.spyhunter99.werp.webxml.model.ServletElement;
 import java.io.File;
 import java.util.Iterator;
 import java.util.List;
@@ -81,8 +81,10 @@ public class WebXmlParserTest {
             }
         }
 
+        output = new File("target/" + input.getName() + "-undo.xml");
         instance.write(output);
         instance = new WebXmlParser();
+        
         instance.parse(output);
         Assert.assertEquals(beforeS, instance.getServlets().size());
         Assert.assertEquals(beforeFM, instance.getFilterMapping().size());
@@ -97,6 +99,17 @@ public class WebXmlParserTest {
     public void testParseF() throws Exception {
         System.out.println("parseF");
         File input = new File("src/test/resources/fgsms/web.xml");
+        runTest(input);
+
+    }
+    
+     /**
+     * Test of parse method, of class WebXmlParser.
+     */
+    @org.junit.Test
+    public void testParseC() throws Exception {
+        System.out.println("parseC");
+        File input = new File("src/test/resources/complexWebXml.xml");
         runTest(input);
 
     }
