@@ -10,6 +10,11 @@ package com.github.spyhunter99.werp.beans;
  *
  * @author AO
  */
-public class OutFaultInterceptors {
+public class OutFaultInterceptors extends Interceptor{
+
+    @Override
+    public Direction getDirection() {
+        return Direction.OUT_FAULT;
+    }
 
 }

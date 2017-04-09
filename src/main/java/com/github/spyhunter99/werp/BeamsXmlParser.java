@@ -9,7 +9,12 @@ import com.github.spyhunter99.werp.beans.Bean;
 import com.github.spyhunter99.werp.beans.Endpoint;
 import com.github.spyhunter99.werp.beans.Handler;
 import com.github.spyhunter99.werp.beans.HandlerRef;
+import com.github.spyhunter99.werp.beans.InFaultInteceptors;
+import com.github.spyhunter99.werp.beans.InInterceptors;
+import com.github.spyhunter99.werp.beans.Interceptor;
 import com.github.spyhunter99.werp.beans.JaxRsEndpoint;
+import com.github.spyhunter99.werp.beans.OutFaultInterceptors;
+import com.github.spyhunter99.werp.beans.OutInterceptors;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,9 +43,10 @@ public class BeamsXmlParser {
     private static final String BEAN_TAG = "bean";
     private Document document = null;
     private Map<String, String> prefixNamespaceMap = new HashMap<String, String>();
-    String jaxws_prefix = "jaxws";
-    String jaxrs_prefix = "jaxrs";
-    String cxf_prefix = "cxf";
+    private String jaxws_prefix = "jaxws";
+    private String jaxrs_prefix = "jaxrs";
+    private String cxf_prefix = "cxf";
+    private List<Interceptor> globalInterceptors = new ArrayList<>();
 
     //TODO global cxf:bus interceptors
     private List<Bean> beans = new ArrayList<Bean>();
@@ -117,6 +123,8 @@ public class BeamsXmlParser {
         } else if ((jaxrs_prefix + ":server").equals(nodeName) || ("server".equals(nodeName) && isNamespace(node, NS_JAXRS))) {
             //jaxrs server
             scanJaxRsServer(node);
+        } else if ((cxf_prefix + ":bus").equals(nodeName) || ("server".equals(nodeName) && isNamespace(node, CXF_CORE))) {
+            scanGlobalCxf(node);
         }
         //cxf:bus
     }
@@ -271,7 +279,7 @@ public class BeamsXmlParser {
                 if (bean != null) {
                     Bean b = new Bean();
                     b.setClazz(bean.getTextContent().trim());
-                    
+
                     baseAddress.getServiceBeans().add(b);
                 }
 
@@ -292,4 +300,74 @@ public class BeamsXmlParser {
     public void setJaxRsEndpoints(List<JaxRsEndpoint> jaxRsEndpoints) {
         this.jaxRsEndpoints = jaxRsEndpoints;
     }
+
+    private void scanGlobalCxf(Node n) {
+        for (int i = 0; i < n.getChildNodes().getLength(); i++) {
+            Node node = n.getChildNodes().item(i);
+            String nodeName = node.getNodeName();
+            if ((cxf_prefix + ":inInterceptors").equals(nodeName) || ("inInterceptors".equals(nodeName) && isNamespace(node, CXF_CORE))) {
+                addGlobalInterceptor(Interceptor.Direction.IN, node);
+
+            } else if ((cxf_prefix + ":outInterceptors").equals(nodeName) || ("inInterceptors".equals(nodeName) && isNamespace(node, CXF_CORE))) {
+                addGlobalInterceptor(Interceptor.Direction.OUT, node);
+
+            } else if ((cxf_prefix + ":outFaultInterceptors").equals(nodeName) || ("outFaultInterceptors".equals(nodeName) && isNamespace(node, CXF_CORE))) {
+                addGlobalInterceptor(Interceptor.Direction.OUT_FAULT, node);
+
+            } else if ((cxf_prefix + ":inFaultInterceptors").equals(nodeName) || ("inFaultInterceptors".equals(nodeName) && isNamespace(node, CXF_CORE))) {
+                addGlobalInterceptor(Interceptor.Direction.IN_FAULT, node);
+            }
+            //could be 'ref'
+            //'component-id'
+            //'bean'
+            //'serviceFactory'
+        }
+    }
+
+    private void addGlobalInterceptor(Interceptor.Direction direction, Node n) {
+        Interceptor input=null;
+        switch (direction) {
+            case IN:
+                input = new InInterceptors();
+                break;
+            case IN_FAULT:
+                input = new InFaultInteceptors();
+                break;
+            case OUT:
+                input = new OutInterceptors();
+                break;
+            case OUT_FAULT:
+                input = new OutFaultInterceptors();
+                break;
+        }
+        for (int i = 0; i < n.getChildNodes().getLength(); i++) {
+            Node node = n.getChildNodes().item(i);
+            if (node.getNodeName().endsWith("ref")) {
+
+                Node bean = node.getAttributes().getNamedItem("bean");
+                if (bean != null) {
+                    String beanRef = bean.getTextContent().trim();
+                    HandlerRef ref = new HandlerRef();
+                    ref.setBean(beanRef);
+                    input.setBeanRef(ref);
+                   globalInterceptors.add(input);
+                }
+            } else if (node.getNodeName().endsWith("bean")) {
+                Node bean = node.getAttributes().getNamedItem("class");
+                if (bean != null) {
+                    Bean b = new Bean();
+                    b.setClazz(bean.getTextContent().trim());
+
+                    input.setBean(b);
+                    globalInterceptors.add(input);
+                }
+
+            }
+        }
+    }
+
+    public List<Interceptor> getGlobalInterceptors() {
+        return globalInterceptors;
+    }
+
 }

@@ -17,10 +17,8 @@ public class JaxRsEndpoint {
 
     private String address;
     private String id;
-      private List<InInterceptors> in = new ArrayList<InInterceptors>();
-    private List<InFaultInteceptors> inf = new ArrayList<InFaultInteceptors>();
-    private List<OutFaultInterceptors> out = new ArrayList<OutFaultInterceptors>();
-    private List<OutInterceptors> outF = new ArrayList<OutInterceptors>();
+      private List<Interceptor> interceptors = new ArrayList<Interceptor>();
+    
     private List<Bean> serviceBeans = new ArrayList<>();
     private List<HandlerRef> serviceBeanReference = new ArrayList<HandlerRef>();
 
@@ -40,37 +38,6 @@ public class JaxRsEndpoint {
         this.id = id;
     }
 
-    public List<InInterceptors> getIn() {
-        return in;
-    }
-
-    public void setIn(List<InInterceptors> in) {
-        this.in = in;
-    }
-
-    public List<InFaultInteceptors> getInf() {
-        return inf;
-    }
-
-    public void setInf(List<InFaultInteceptors> inf) {
-        this.inf = inf;
-    }
-
-    public List<OutFaultInterceptors> getOut() {
-        return out;
-    }
-
-    public void setOut(List<OutFaultInterceptors> out) {
-        this.out = out;
-    }
-
-    public List<OutInterceptors> getOutF() {
-        return outF;
-    }
-
-    public void setOutF(List<OutInterceptors> outF) {
-        this.outF = outF;
-    }
 
     public List<Bean> getServiceBeans() {
         return serviceBeans;
@@ -86,5 +53,13 @@ public class JaxRsEndpoint {
 
     public void setServiceBeanReference(List<HandlerRef> serviceBeanReference) {
         this.serviceBeanReference = serviceBeanReference;
+    }
+
+    public List<Interceptor> getInterceptors() {
+        return interceptors;
+    }
+
+    public void setInterceptors(List<Interceptor> interceptors) {
+        this.interceptors = interceptors;
     }
 }

@@ -40,16 +40,17 @@ public class BeamsXmlParserTest {
     }
 
     private void runTest(File input, int expectedJaxWsEndpoints, int beans) throws Exception {
-        runTest(input, expectedJaxWsEndpoints, beans, 0);
+        runTest(input, expectedJaxWsEndpoints, beans, 0,0);
         
     }
     
-    private void runTest(File input, int expectedJaxWsEndpoints, int beans, int jaxrsEndpoints) throws Exception {
+    private void runTest(File input, int expectedJaxWsEndpoints, int beans, int jaxrsEndpoints, int globalHandlers) throws Exception {
         BeamsXmlParser instance = new BeamsXmlParser();
         instance.parse(input);
         Assert.assertEquals(beans, instance.getBeans().size());
         Assert.assertEquals(expectedJaxWsEndpoints, instance.getJaxWsEndpoints().size());
         Assert.assertEquals(jaxrsEndpoints, instance.getJaxRsEndpoints().size());
+        Assert.assertEquals(globalHandlers, instance.getGlobalInterceptors().size());
         
     }
 
@@ -60,7 +61,7 @@ public class BeamsXmlParserTest {
     public void testParse() throws Exception {
         System.out.println("parse");
         File input = new File("src/test/resources/fgsms/beans.xml");
-        runTest(input, 5, 6,1);
+        runTest(input, 5, 6,1,0);
 
     }
 
@@ -76,7 +77,7 @@ public class BeamsXmlParserTest {
     public void testParse3() throws Exception {
         System.out.println("parse3");
         File input = new File("src/test/resources/cxfbeans/cxf-test.xml");
-        runTest(input, 6, 12,7);
+        runTest(input, 6, 12,7,0);
 
     }
     
@@ -84,7 +85,7 @@ public class BeamsXmlParserTest {
     public void testParse4() throws Exception {
         System.out.println("parse3");
         File input = new File("src/test/resources/cxfbeans/jaxrs1.xml");
-        runTest(input, 0, 1,1);
+        runTest(input, 0, 1,1,0);
 
     }
     @Ignore
@@ -111,7 +112,7 @@ public class BeamsXmlParserTest {
         File input = new File("src/test/resources/cxfbeans/juddi-beans.xml");
         //11 jaxws
         //1 jaxrs
-        runTest(input, 11 , 3, 1);
+        runTest(input, 11 , 3, 1,0);
 
     }
     
@@ -126,7 +127,8 @@ public class BeamsXmlParserTest {
     public void testParse9() throws Exception {
         System.out.println("parse3");
         File input = new File("src/test/resources/cxfbeans/logging2.xml");
-        runTest(input, 0, 2);
+        runTest(input, 0, 2,0,4);
 
     }
+    
 }
