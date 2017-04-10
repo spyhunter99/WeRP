@@ -5,6 +5,9 @@
  */
 package com.github.spyhunter99.werp;
 
+import com.github.spyhunter99.werp.beans.Bean;
+import com.github.spyhunter99.werp.beans.HandlerRef;
+import com.github.spyhunter99.werp.beans.InInterceptors;
 import java.io.File;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -16,7 +19,7 @@ import org.junit.Test;
 
 /**
  *
- * @author Dad
+ * @author AO
  */
 public class BeamsXmlParserTest {
 
@@ -51,6 +54,55 @@ public class BeamsXmlParserTest {
         Assert.assertEquals(expectedJaxWsEndpoints, instance.getJaxWsEndpoints().size());
         Assert.assertEquals(jaxrsEndpoints, instance.getJaxRsEndpoints().size());
         Assert.assertEquals(globalHandlers, instance.getGlobalInterceptors().size());
+        
+        
+        //add remove bean
+        File temp = new File("target/" + input.getName() + "-modified.xml");
+        instance.write(temp);
+        instance = new BeamsXmlParser();
+        instance.parse(temp);
+        Assert.assertEquals(beans, instance.getBeans().size());
+        Assert.assertEquals(expectedJaxWsEndpoints, instance.getJaxWsEndpoints().size());
+        Assert.assertEquals(jaxrsEndpoints, instance.getJaxRsEndpoints().size());
+        Assert.assertEquals(globalHandlers, instance.getGlobalInterceptors().size());
+        
+        Bean newBean = new Bean();
+        newBean.setClazz("com.github.spyhunter99.CustomBean");
+        newBean.setId("awesomeBean");
+        instance.addBean(newBean);
+        instance.write(temp);
+
+        instance = new BeamsXmlParser();
+        instance.parse(temp);
+        Assert.assertEquals(beans+1, instance.getBeans().size());
+        Assert.assertEquals(expectedJaxWsEndpoints, instance.getJaxWsEndpoints().size());
+        Assert.assertEquals(jaxrsEndpoints, instance.getJaxRsEndpoints().size());
+        Assert.assertEquals(globalHandlers, instance.getGlobalInterceptors().size());
+        instance.removeBean(newBean);
+        temp = new File("target/" + input.getName() + "-undo.xml");
+        instance.write(temp);
+        
+        instance = new BeamsXmlParser();
+        instance.parse(temp);
+        Assert.assertEquals(beans, instance.getBeans().size());
+        Assert.assertEquals(expectedJaxWsEndpoints, instance.getJaxWsEndpoints().size());
+        Assert.assertEquals(jaxrsEndpoints, instance.getJaxRsEndpoints().size());
+        Assert.assertEquals(globalHandlers, instance.getGlobalInterceptors().size());
+        instance.addBean(newBean);
+        
+        HandlerRef ref = new HandlerRef();
+        ref.setBean(newBean.getId());
+        
+        //add remove global handler with bean reference
+        instance.addGlobalHandler(new InInterceptors(ref));
+        temp = new File("target/" + input.getName() + "-modified2.xml");
+        instance.write(temp);
+        instance = new BeamsXmlParser();
+        instance.parse(temp);
+        Assert.assertEquals(beans+1, instance.getBeans().size());
+        Assert.assertEquals(expectedJaxWsEndpoints, instance.getJaxWsEndpoints().size());
+        Assert.assertEquals(jaxrsEndpoints, instance.getJaxRsEndpoints().size());
+        Assert.assertEquals(globalHandlers+1, instance.getGlobalInterceptors().size());
         
     }
 
@@ -128,6 +180,14 @@ public class BeamsXmlParserTest {
         System.out.println("parse3");
         File input = new File("src/test/resources/cxfbeans/logging2.xml");
         runTest(input, 0, 2,0,4);
+
+    }
+    
+     @Test
+    public void testParse10() throws Exception {
+        System.out.println("parse3");
+        File input = new File("src/test/resources/cxfbeans/empty.xml");
+        runTest(input, 0, 0,0,0);
 
     }
     

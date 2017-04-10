@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author Dad
+ * @author AO
  */
 public class SunJaxwsXmlParserTest {
     

@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.github.spyhunter99.werp.beans;
 
 /**
@@ -12,6 +11,7 @@ package com.github.spyhunter99.werp.beans;
  */
 public class Bean {
 //id is optional
+
     private String id;
     private String clazz;
 

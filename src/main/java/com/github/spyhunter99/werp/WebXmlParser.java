@@ -85,7 +85,7 @@ public class WebXmlParser {
         long start = System.currentTimeMillis();
         //loop through the current document, remove any element no longer in our collection
 
-        processWebAppNodeWrite();
+        applyChanges();
 
         //add new elements that have been added
         // Use a Transformer for output
@@ -193,7 +193,7 @@ public class WebXmlParser {
 
     }
 
-    private void processWebAppNodeWrite() {
+    private void applyChanges() {
 
         doFilters();
         doFiltersMappings();

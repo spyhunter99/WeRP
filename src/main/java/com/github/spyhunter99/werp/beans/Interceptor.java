@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.github.spyhunter99.werp.beans;
 
 /**
@@ -11,6 +10,18 @@ package com.github.spyhunter99.werp.beans;
  * @author AO
  */
 public abstract class Interceptor {
+
+    public Interceptor() {
+
+    }
+
+    public Interceptor(Bean inlineBean) {
+        this.bean = inlineBean;
+    }
+
+    public Interceptor(HandlerRef beanReference) {
+        this.beanRef = beanReference;
+    }
 
     public HandlerRef getBeanRef() {
         return beanRef;
@@ -29,9 +40,10 @@ public abstract class Interceptor {
     }
 
     public enum Direction {
-        IN,IN_FAULT,OUT,OUT_FAULT
+        IN, IN_FAULT, OUT, OUT_FAULT
     }
+
     public abstract Direction getDirection();
-    private HandlerRef beanRef;
-    private Bean bean;
+    protected HandlerRef beanRef;
+    protected Bean bean;
 }

@@ -3,14 +3,21 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.github.spyhunter99.werp.beans;
 
 /**
  *
  * @author AO
  */
-public class InFaultInteceptors extends Interceptor{
+public class InFaultInteceptors extends Interceptor {
+public InFaultInteceptors(){super();}
+    public InFaultInteceptors(Bean inlineBean) {
+        super(inlineBean);
+    }
+
+    public InFaultInteceptors(HandlerRef beanReference) {
+        super(beanReference);
+    }
 
     @Override
     public Direction getDirection() {

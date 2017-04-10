@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.github.spyhunter99.werp.beans;
 
 import java.util.ArrayList;
@@ -17,8 +16,8 @@ public class JaxRsEndpoint {
 
     private String address;
     private String id;
-      private List<Interceptor> interceptors = new ArrayList<Interceptor>();
-    
+    private List<Interceptor> interceptors = new ArrayList<Interceptor>();
+
     private List<Bean> serviceBeans = new ArrayList<>();
     private List<HandlerRef> serviceBeanReference = new ArrayList<HandlerRef>();
 
@@ -37,7 +36,6 @@ public class JaxRsEndpoint {
     public void setId(String id) {
         this.id = id;
     }
-
 
     public List<Bean> getServiceBeans() {
         return serviceBeans;
